@@ -2,6 +2,11 @@ var express = require('express');
 var router = express.Router();
 const db = require('../db/db.js');
 
+function captureRouteParams(req, res, next) {
+    res.locals.routeParams = { ...req.params };
+    next();
+}
+
 router.get('/', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM tours');
@@ -12,7 +17,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', captureRouteParams, async (req, res) => {
     try {
         const [rows] = await db.query(
             'SELECT * FROM tours WHERE tour_id = ?',
@@ -51,7 +56,6 @@ router.post('/', async (req, res) => {
             message: 'Tour created',
             id: result.insertId
         });
-        console.log(req.body);
     }
      
     catch (err) {
@@ -60,7 +64,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', captureRouteParams, async (req, res) => {
     try {
         const [result] = await db.query(
             'DELETE FROM tours WHERE tour_id = ?',

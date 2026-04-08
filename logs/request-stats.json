@@ -1,0 +1,14 @@
+[
+  {
+    "eventType": "requestObserved",
+    "timestamp": "2026-04-07T18:00:57.310Z",
+    "method": "DELETE",
+    "path": "/tours/8",
+    "routeParams": {
+      "id": "8"
+    },
+    "queryParams": {},
+    "userAgent": "unknown",
+    "statusCode": 404
+  }
+]
