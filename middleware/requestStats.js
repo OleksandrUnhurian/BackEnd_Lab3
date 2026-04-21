@@ -4,7 +4,7 @@ const SENSITIVE_KEYS = ['password', 'token', 'email'];
 
 function isSensitiveKey(key) {
   const normalizedKey = String(key).toLowerCase();
-  return SENSITIVE_KEYS.some((sensitiveKey) => normalizedKey.includes(sensitiveKey));
+  return SENSITIVE_KEYS.some(k => normalizedKey.includes(k));
 }
 
 function obfuscateValues(source) {

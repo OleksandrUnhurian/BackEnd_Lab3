@@ -16,17 +16,47 @@ function ensureLogFile() {
 }
 
 function appendEventToFile(eventPayload) {
+  try {
+    ensureLogFile();
+
+    let parsedContent = [];
+
+    function appendEventToFile(eventPayload) {
   ensureLogFile();
 
-  const fileContent = fs.readFileSync(logFilePath, 'utf8');
-  const parsedContent = JSON.parse(fileContent);
+  fs.appendFileSync(
+    logFilePath,
+    JSON.stringify(eventPayload) + "\n",
+    'utf8'
+  );
+}
+  } catch (err) {
+    console.error("FILE WRITE ERROR:", err.message);
+  }
+}
 
-  parsedContent.push(eventPayload);
+function printToConsole(eventPayload) {
+  console.log("\n==============================");
+  console.log("EVENT:", eventPayload.eventType);
+  console.log("Time:", eventPayload.timestamp);
+  console.log("Method:", eventPayload.method);
+  console.log("Path:", eventPayload.path);
+  console.log("IP:", eventPayload.ip || eventPayload.routeParams);
+  console.log("Status:", eventPayload.statusCode);
 
-  fs.writeFileSync(logFilePath, JSON.stringify(parsedContent, null, 2), 'utf8');
+  if (eventPayload.responseTimeMs) {
+    console.log("Response time:", eventPayload.responseTimeMs + "ms");
+  }
+
+  if (eventPayload.rateLimit) {
+    console.log("RATE LIMIT INFO:", eventPayload.rateLimit);
+  }
+
+  console.log("==============================\n");
 }
 
 function handleEvent(eventPayload) {
+  printToConsole(eventPayload); 
   appendEventToFile(eventPayload);
 }
 

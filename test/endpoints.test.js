@@ -260,7 +260,7 @@ test('POST /tours validates required fields', async () => {
   }
 });
 
-test('DELETE /tours/:id removes a tour', async () => {
+test('DELETE /:id removes a tour', async () => {
   const server = await startServer(async (sql, params) => {
     assert.equal(sql, 'DELETE FROM tours WHERE tour_id = ?');
     assert.deepEqual(params, ['8']);

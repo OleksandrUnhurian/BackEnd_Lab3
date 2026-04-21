@@ -7,6 +7,7 @@ function captureRouteParams(req, res, next) {
     next();
 }
 
+// GET ALL
 router.get('/', async (req, res) => {
     try {
         const [rows] = await db.query('SELECT * FROM tours');
@@ -17,6 +18,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET
 router.get('/:id', captureRouteParams, async (req, res) => {
     try {
         const [rows] = await db.query(
@@ -35,13 +37,14 @@ router.get('/:id', captureRouteParams, async (req, res) => {
     }
 });
 
+// POST
 router.post('/', async (req, res) => {
     try {
         if (!req.body) {
-    return res.status(400).json({ error: 'Body is missing' });
-}
+            return res.status(400).send('Missing fields');
+        }
 
-    const { hotel_id, duration_weeks, base_price } = req.body;
+        const { hotel_id, duration_weeks, base_price } = req.body;
 
         if (!hotel_id || !duration_weeks || !base_price) {
             return res.status(400).send('Missing fields');
@@ -56,30 +59,31 @@ router.post('/', async (req, res) => {
             message: 'Tour created',
             id: result.insertId
         });
-    }
-     
-    catch (err) {
+    } catch (err) {
         console.error(err);
         res.status(500).send('Database error');
     }
 });
 
-router.delete('/:id', captureRouteParams, async (req, res) => {
+// DELETE
+router.delete('/:id', async (req, res) => {
     try {
+        const id = req.params.id;
+
         const [result] = await db.query(
             'DELETE FROM tours WHERE tour_id = ?',
-            [req.params.id]
+            [id]
         );
 
         if (result.affectedRows === 0) {
             return res.status(404).send('Tour not found');
         }
 
-        res.sendStatus(204);
+        return res.status(204).send();
 
     } catch (err) {
         console.error(err);
-        res.status(500).send('Database error');
+        return res.status(500).send('Database error');
     }
 });
 
